@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="menu-bar" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.firstjavafx.tabela">
+   <children>
+      <GridPane layoutX="1120.0" layoutY="1.0" prefHeight="718.0" prefWidth="160.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="129.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="80.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="704.0" minHeight="50.0" prefHeight="508.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="704.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="704.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="704.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <MenuButton alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" text="Kierunki" textAlignment="CENTER" textOverrun="CLIP" GridPane.rowIndex="2" GridPane.valignment="TOP">
+              <items>
+                <MenuItem mnemonicParsing="false" text="informatyka w systemach" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </MenuButton>
+            <Label alignment="CENTER" prefHeight="30.0" prefWidth="200.0" text="Zalogowany jako: " />
+            <Label alignment="CENTER" prefHeight="30.0" prefWidth="200.0" text="user name i surname" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" text="Dodaj plan" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" text="Usuń plan" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" text="Edytuj plan" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
+         </children>
+      </GridPane>
+      <TableView prefHeight="720.0" prefWidth="1120.0" >
+          <placeholder>
+              <Label text="Wybierz plan"/>
+          </placeholder>
+         <columns>
+            <TableColumn fx:id="numberOfLesson" prefWidth="40.0" text="NR" />
+            <TableColumn fx:id="hour" prefWidth="100.0" text="GODZ" />
+            <TableColumn fx:id="monday" minWidth="20.0" prefWidth="196.0" sortable="false" text="PONIEDZIAŁEK" />
+            <TableColumn fx:id="tuesday" minWidth="20.0" prefWidth="196.0" sortable="false" text="WTOREK" />
+            <TableColumn fx:id="wednesday" minWidth="20.0" prefWidth="196.0" sortable="false" text="ŚRODA" />
+            <TableColumn fx:id="thursday" minWidth="20.0" prefWidth="196.0" sortable="false" text="CZWARTEK" />
+            <TableColumn fx:id="friday" minWidth="20.0" prefWidth="196.0" sortable="false" text="PIĄTEK" />
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+   </children>
+</AnchorPane>
