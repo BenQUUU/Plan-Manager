@@ -6,11 +6,18 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
 
-public class HelloApplication extends Application {
+public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("loginWindow.fxml"));
+
+        DBConnector dbConnection = new DBConnector();
+        Connection connection = dbConnection.connectToDatabase("planManagerDB", "postgres", "zaq1@WSX");
+        dbConnection.fetchUserEmailByUserId(connection, 15);
+
+
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("loginWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Hello!");
         stage.setScene(scene);
