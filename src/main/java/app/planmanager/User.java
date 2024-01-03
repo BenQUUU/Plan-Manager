@@ -1,5 +1,7 @@
 package app.planmanager;
 
+import java.sql.Connection;
+
 enum Group{
     user,
     teacher,
