@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -49,7 +50,12 @@ public class loginController extends MainApp implements Initializable {
 
         if(user != null){
             //login, turn on new window
-            openNewWindow();
+            ArrayList<Lesson> lessonArrayList = dbFunctions.getAllPlanInformation(connection);
+            System.out.println(lessonArrayList.size());
+            for(Lesson element : lessonArrayList){
+                System.out.println(element);
+            }
+            //openNewWindow();
         }else{
             //error during login
             displayAlertIfErrorOccurredDuringLogin();

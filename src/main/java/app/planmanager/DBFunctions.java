@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DBFunctions {
     public User getUserEmailAndPassword(Connection connection, String email, String password) {
@@ -61,4 +62,37 @@ public class DBFunctions {
         }
 
     }
+
+    public ArrayList<Lesson> getAllPlanInformation(Connection connection) {
+        PreparedStatement statement;
+        ResultSet resultSet;
+
+        ArrayList<Lesson> lessonList = new ArrayList<>();
+
+        try{
+            String getPlanInformation = "SELECT *\n" +
+                    "FROM public.\"INF_1\" as i\n" +
+                    "INNER JOIN public.\"Subjects\" as s ON i.\"Subject\" = s.\"SubjectID\"\n" +
+                    "INNER JOIN public.\"Users\" as u ON s.\"SubjectTeacher\" = u.\"UserID\";";
+            statement = connection.prepareStatement(getPlanInformation);
+            resultSet = statement.executeQuery();
+
+            while(resultSet.next()){
+                Lesson lesson = new Lesson(
+                        resultSet.getString("DayName"),
+                        resultSet.getInt("LessonNumber"),
+                        resultSet.getInt("Classroom"),
+                        resultSet.getString("SubjectName"),
+                        resultSet.getString("Name"),
+                        resultSet.getString("Surname")
+                );
+                lessonList.add(lesson);
+            }
+            return lessonList;
+        }catch (SQLException e){
+            System.out.println("Error: " + e);
+            return null;
+        }
+    }
 }
+
