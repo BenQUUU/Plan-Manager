@@ -60,4 +60,15 @@ public class User {
     public void setGroup_(Group group_) {
         this.group_ = group_;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userID_=" + userID_ +
+                ", name_='" + name_ + '\'' +
+                ", surname_='" + surname_ + '\'' +
+                ", email_='" + email_ + '\'' +
+                ", group_=" + group_ +
+                '}';
+    }
 }

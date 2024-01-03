@@ -14,8 +14,9 @@ public class MainApp extends Application {
 
         DBConnector dbConnection = new DBConnector();
         Connection connection = dbConnection.connectToDatabase("planManagerDB", "postgres", "zaq1@WSX");
-        dbConnection.fetchUserEmailByUserId(connection, 15);
 
+        User user = dbConnection.getUserEmailAndPassword(connection, "lebron.james@email.com", "hashed_password");
+        System.out.println(user);
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("loginWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
