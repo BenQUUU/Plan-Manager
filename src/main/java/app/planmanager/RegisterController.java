@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -67,6 +68,9 @@ public class RegisterController implements Initializable {
 
     @FXML
     private void createNewUser(){
+
+
+
         try{
             String userEmail = email.getText();
             String userPassword = password.getText();
@@ -76,8 +80,22 @@ public class RegisterController implements Initializable {
             if((!Objects.equals(userEmail, email2.getText())) || (!Objects.equals(userPassword, password2.getText()))){
                 throw new InputMismatchException("Emaile bądź hasła różnią się od siebie!");
             } else {
+
+                DBConnector dbConnector = new DBConnector();
+                Connection connection = dbConnector.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
+
+                try{
+                    DBFunctions dbFunctions = new DBFunctions();
+                    User user = new User(userName,userSurname,userEmail,userPassword, Group.user);
+                    dbFunctions.registerUser(connection, user);
+                }catch (Exception e){
+                    System.out.println("Error: " + e);
+                }
+
                 infoLabel.setTextFill(Color.GREEN);
                 infoLabel.setText("Pomyślnie stworzono użytkownika");
+
+                dbConnector.closeDatabase(connection);
             }
         } catch (InputMismatchException e){
             infoLabel.setTextFill(Color.RED);

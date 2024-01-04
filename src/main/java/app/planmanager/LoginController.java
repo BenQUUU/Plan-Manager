@@ -50,7 +50,7 @@ public class LoginController extends MainApp implements Initializable {
 
         DBFunctions dbFunctions = new DBFunctions();
 
-        User user = dbFunctions.getUserEmailAndPassword(connection, email, password);
+        User user = dbFunctions.checkEmailAndPasswordValidity(connection, email, password);
 
         if (user != null) {
             //login, turn on new window
@@ -59,7 +59,7 @@ public class LoginController extends MainApp implements Initializable {
             for (Lesson element : lessonArrayList) {
                 System.out.println(element);
             }
-            //openNewWindow();
+            openNewWindow();
         } else {
             //error during login
             displayAlertIfErrorOccurredDuringLogin();
