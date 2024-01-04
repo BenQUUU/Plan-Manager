@@ -1,18 +1,18 @@
 package app.planmanager;
 
 public class Lesson {
-    private String dayName;
-    private int lessonNumber;
-    private int classroom;
-    private String subjectName;
-    private String subjectTeacherInitials;
+    private final String dayName;
+    private final int lessonNumber;
+    private final int classroom;
+    private final String subjectName;
+    private final String subjectTeacherInitials;
 
     public Lesson(String dayName, int lessonNumber, int classroom, String subjectName, String teacherName, String teacherSurname) {
         this.dayName = dayName;
         this.lessonNumber = lessonNumber;
         this.classroom = classroom;
         this.subjectName = subjectName;
-        this.subjectTeacherInitials = teacherName.substring(0,1) + teacherSurname.substring(0,1);
+        this.subjectTeacherInitials = teacherName.substring(0,1) + teacherSurname.charAt(0);
     }
 
     public String getDayName() {

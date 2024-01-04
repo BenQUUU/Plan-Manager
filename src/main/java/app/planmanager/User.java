@@ -1,8 +1,6 @@
 package app.planmanager;
 
-import java.sql.Connection;
-
-enum Group{
+enum Group {
     user,
     teacher,
     admin
@@ -16,7 +14,7 @@ public class User {
     private String password_;
     private Group group_;
 
-    public User(String name, String surname, String email, String password ,Group group) {
+    public User(String name, String surname, String email, String password, Group group) {
         this.name_ = name;
         this.surname_ = surname;
         this.email_ = email;
