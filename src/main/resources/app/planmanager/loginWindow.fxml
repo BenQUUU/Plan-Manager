@@ -5,10 +5,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.planmanager.loginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.planmanager.LoginController">
    <children>
-      <Button fx:id="loginButton" layoutX="127.0" layoutY="243.0" mnemonicParsing="false"  text="Log in" />
-      <Button layoutX="219.0" layoutY="243.0" mnemonicParsing="false" text="register" />
+      <Button fx:id="loginButton" layoutX="127.0" layoutY="243.0" mnemonicParsing="false" text="Log in" />
+      <Button fx:id="registerButton" layoutX="219.0" layoutY="243.0" mnemonicParsing="false" text="Register" />
       <TextField fx:id="userPassedEmail" layoutX="127.0" layoutY="143.0" promptText="Email" />
       <TextField fx:id="userPassedPassword" layoutX="127.0" layoutY="200.0" promptText="Hasło" />
       <Text layoutX="187.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" />

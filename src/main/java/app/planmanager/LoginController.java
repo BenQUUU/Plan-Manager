@@ -1,6 +1,5 @@
 package app.planmanager;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class loginController extends MainApp implements Initializable {
+public class LoginController extends MainApp implements Initializable {
 
     @FXML
     private Button loginButton;
@@ -31,10 +30,15 @@ public class loginController extends MainApp implements Initializable {
     @FXML
     private TextField userPassedPassword;
 
+    @FXML
+    private Button registerButton;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loginButton.setOnAction(e -> loginUserToApp());
+        registerButton.setOnAction(e -> openRegistrationWindow());
     }
+
     @FXML
     private void loginUserToApp() {
 
@@ -48,15 +52,15 @@ public class loginController extends MainApp implements Initializable {
 
         User user = dbFunctions.getUserEmailAndPassword(connection, email, password);
 
-        if(user != null){
+        if (user != null) {
             //login, turn on new window
             ArrayList<Lesson> lessonArrayList = dbFunctions.getAllPlanInformation(connection);
             System.out.println(lessonArrayList.size());
-            for(Lesson element : lessonArrayList){
+            for (Lesson element : lessonArrayList) {
                 System.out.println(element);
             }
             //openNewWindow();
-        }else{
+        } else {
             //error during login
             displayAlertIfErrorOccurredDuringLogin();
         }
@@ -68,13 +72,13 @@ public class loginController extends MainApp implements Initializable {
         System.out.println(email + " " + password);
     }
 
-    public void displayAlertIfErrorOccurredDuringLogin(){
+    public void displayAlertIfErrorOccurredDuringLogin() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error during login");
         alert.setContentText("Wrong email or password");
         Optional<ButtonType> result = alert.showAndWait();
 
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             System.out.println("Closed");
         } else if (result.get() == ButtonType.OK) {
             System.out.println("ok");
@@ -82,8 +86,9 @@ public class loginController extends MainApp implements Initializable {
             System.out.println("never");
         }
     }
-    public void openNewWindow(){
-        try{
+
+    public void openNewWindow() {
+        try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("mainWindow.fxml"));
             Parent root = loader.load();
@@ -102,4 +107,23 @@ public class loginController extends MainApp implements Initializable {
         }
     }
 
+    public void openRegistrationWindow() {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("registerWindow.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Tworzenie konta");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.WINDOW_MODAL);
+
+            stage.initOwner(loginButton.getScene().getWindow());
+
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
