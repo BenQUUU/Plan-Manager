@@ -13,13 +13,14 @@ public class User {
     private String name_;
     private String surname_;
     private String email_;
+    private String password_;
     private Group group_;
 
-    public User(int userID, String name, String surname, String email, Group group) {
-        this.userID_ = userID;
+    public User(String name, String surname, String email, String password ,Group group) {
         this.name_ = name;
         this.surname_ = surname;
         this.email_ = email;
+        this.password_ = password;
         this.group_ = group;
     }
 
@@ -55,8 +56,16 @@ public class User {
         this.email_ = email_;
     }
 
-    public Group getGroup_() {
-        return group_;
+    public String getGroup_() {
+        return group_.name();
+    }
+
+    public String getPassword_() {
+        return password_;
+    }
+
+    public void setPassword_(String password_) {
+        this.password_ = password_;
     }
 
     public void setGroup_(Group group_) {
