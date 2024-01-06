@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static app.planmanager.WindowCreator.createNewWindow;
+
 public class LoginController extends MainApp implements Initializable {
 
     @FXML
@@ -36,7 +38,7 @@ public class LoginController extends MainApp implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loginButton.setOnAction(e -> loginUserToApp());
-        registerButton.setOnAction(e -> openRegistrationWindow());
+        registerButton.setOnAction(e -> createNewWindow("registerWindow.fxml", "Plan lekcji"));
     }
 
     @FXML
@@ -59,7 +61,7 @@ public class LoginController extends MainApp implements Initializable {
             for (Lesson element : lessonArrayList) {
                 System.out.println(element);
             }
-            openNewWindow();
+            createNewWindow("mainWindow.fxml", "Plan lekcji");
         } else {
             //error during login
             displayAlertIfErrorOccurredDuringLogin();
@@ -87,43 +89,43 @@ public class LoginController extends MainApp implements Initializable {
         }
     }
 
-    public void openNewWindow() {
-        try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainWindow.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Nowe Okno");
-            stage.setScene(new Scene(root));
-
-            stage.initModality(Modality.WINDOW_MODAL);
-
-            stage.initOwner(loginButton.getScene().getWindow());
-
-            stage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void openRegistrationWindow() {
-        try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("registerWindow.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Tworzenie konta");
-            stage.setScene(new Scene(root));
-
-            stage.initModality(Modality.WINDOW_MODAL);
-
-            stage.initOwner(loginButton.getScene().getWindow());
-
-            stage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public void openNewWindow() {
+//        try {
+//
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainWindow.fxml"));
+//            Parent root = loader.load();
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("Nowe Okno");
+//            stage.setScene(new Scene(root));
+//
+//            stage.initModality(Modality.WINDOW_MODAL);
+//
+//            stage.initOwner(loginButton.getScene().getWindow());
+//
+//            stage.show();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    public void openRegistrationWindow() {
+//        try {
+//
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("registerWindow.fxml"));
+//            Parent root = loader.load();
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("Tworzenie konta");
+//            stage.setScene(new Scene(root));
+//
+//            stage.initModality(Modality.WINDOW_MODAL);
+//
+//            stage.initOwner(loginButton.getScene().getWindow());
+//
+//            stage.show();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }

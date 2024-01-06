@@ -55,22 +55,23 @@ public class RegisterController implements Initializable {
 
     private void checkFields() {
         // Sprawdzamy, czy wszystkie pola tekstowe nie są puste
-        boolean fieldsNotEmpty = !email.getText().trim().isEmpty() &&
-                !email2.getText().trim().isEmpty() &&
-                !name.getText().trim().isEmpty() &&
-                !surname.getText().trim().isEmpty() &&
-                !password.getText().trim().isEmpty() &&
-                !password2.getText().trim().isEmpty();
+        boolean fieldsNotEmpty = isFieldsEmpty();
 
         // Odblokowujemy przycisk rejestracji, jeśli wszystkie pola są wypełnione
         registerButton.setDisable(!fieldsNotEmpty);
     }
 
+    private boolean isFieldsEmpty(){
+        return !email.getText().trim().isEmpty() &&
+                !email2.getText().trim().isEmpty() &&
+                !name.getText().trim().isEmpty() &&
+                !surname.getText().trim().isEmpty() &&
+                !password.getText().trim().isEmpty() &&
+                !password2.getText().trim().isEmpty();
+    }
+
     @FXML
     private void createNewUser(){
-
-
-
         try{
             String userEmail = email.getText();
             String userPassword = password.getText();
