@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterController implements Initializable {
     @FXML
@@ -70,6 +72,16 @@ public class RegisterController implements Initializable {
                 !password2.getText().trim().isEmpty();
     }
 
+    private boolean checkUserPassword(String password) {
+        if (password.length() < 8 || password.length() > 16) {
+            return true;
+        } else {
+            Pattern pattern = Pattern.compile("[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]");
+            Matcher matcher = pattern.matcher(password);
+            return !matcher.find();
+        }
+    }
+
     @FXML
     private void createNewUser(){
         try{
@@ -80,6 +92,8 @@ public class RegisterController implements Initializable {
 
             if((!Objects.equals(userEmail, email2.getText())) || (!Objects.equals(userPassword, password2.getText()))){
                 throw new InputMismatchException("Emaile bądź hasła różnią się od siebie!");
+            } else if(checkUserPassword(userPassword)){
+                throw new InputMismatchException("Brak znaków specjalnych lub zła długość hasła!");
             } else {
 
                 DBConnector dbConnector = new DBConnector();

@@ -1,22 +1,12 @@
 package app.planmanager;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
-import javafx.stage.Modality;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static app.planmanager.WindowCreator.createNewWindow;
@@ -34,6 +24,11 @@ public class LoginController extends MainApp implements Initializable {
 
     @FXML
     private Button registerButton;
+
+    @FXML
+    private Label loginInfo;
+
+    private MainController mainController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -55,16 +50,14 @@ public class LoginController extends MainApp implements Initializable {
         User user = dbFunctions.checkEmailAndPasswordValidity(connection, email, password);
 
         if (user != null) {
-            //login, turn on new window
-            ArrayList<Lesson> lessonArrayList = dbFunctions.getAllPlanInformation(connection);
-            System.out.println(lessonArrayList.size());
-            for (Lesson element : lessonArrayList) {
-                System.out.println(element);
-            }
-            createNewWindow("mainWindow.fxml", "Plan lekcji");
+            loginInfo.setText("Logowanie powiodło się");
+            // Ustawienie danych użytkownika w MainController po zalogowaniu
+            mainController.setUserData(user);
+
+            // Zamknięcie okna logowania
+            ((Stage) userPassedEmail.getScene().getWindow()).close();
         } else {
-            //error during login
-            displayAlertIfErrorOccurredDuringLogin();
+            loginInfo.setText("Niepoprawne dane logowania");
         }
 
         System.out.println(user);
@@ -74,58 +67,7 @@ public class LoginController extends MainApp implements Initializable {
         System.out.println(email + " " + password);
     }
 
-    public void displayAlertIfErrorOccurredDuringLogin() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error during login");
-        alert.setContentText("Wrong email or password");
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.isEmpty()) {
-            System.out.println("Closed");
-        } else if (result.get() == ButtonType.OK) {
-            System.out.println("ok");
-        } else if (result.get() == ButtonType.CANCEL) {
-            System.out.println("never");
-        }
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
-
-//    public void openNewWindow() {
-//        try {
-//
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainWindow.fxml"));
-//            Parent root = loader.load();
-//
-//            Stage stage = new Stage();
-//            stage.setTitle("Nowe Okno");
-//            stage.setScene(new Scene(root));
-//
-//            stage.initModality(Modality.WINDOW_MODAL);
-//
-//            stage.initOwner(loginButton.getScene().getWindow());
-//
-//            stage.show();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    public void openRegistrationWindow() {
-//        try {
-//
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("registerWindow.fxml"));
-//            Parent root = loader.load();
-//
-//            Stage stage = new Stage();
-//            stage.setTitle("Tworzenie konta");
-//            stage.setScene(new Scene(root));
-//
-//            stage.initModality(Modality.WINDOW_MODAL);
-//
-//            stage.initOwner(loginButton.getScene().getWindow());
-//
-//            stage.show();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 }
