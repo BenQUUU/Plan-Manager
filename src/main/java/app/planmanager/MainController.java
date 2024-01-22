@@ -75,32 +75,20 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         DBConnector dbConnection = new DBConnector();
         Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
-        DBFunctions dbFunctions = new DBFunctions();
 
         loginButton.setOnAction(e -> onLoginButtonClick());
 
         daysOfWeek = FXCollections.observableArrayList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
         dayListView.setItems(daysOfWeek);
 
-        // Ustaw domyślny dzień
         dayListView.getSelectionModel().selectFirst();
-        dayListView.getSelectionModel().selectedItemProperty().addListener((daysOfWeek, oldValue, newValue) -> {
-            if(newValue != null){
-                currentDay = newValue;
-            }
-        });
 
         // Obsługa przycisków
         prevButton.setOnAction(event -> scroll(-1));
         nextButton.setOnAction(event -> scroll(1));
-
-        currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection));
-
-        for(Lesson l: currentDayLessons){
-            l.setHour();
-        }
 
         numberOfLesson.setCellValueFactory(new PropertyValueFactory<>("lessonNumber"));
         hour.setCellValueFactory(new PropertyValueFactory<>("hour"));
@@ -108,8 +96,26 @@ public class MainController implements Initializable {
         subject.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         teacher.setCellValueFactory(new PropertyValueFactory<>("subjectTeacherInitials"));
 
+        DBFunctions dbFunctions = new DBFunctions();
+        currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, "Monday"));
+
+        for (Lesson l : currentDayLessons) {
+            l.setHour();
+        }
+
+        dayListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, newValue));
+                for (Lesson l : currentDayLessons) {
+                    l.setHour();
+                }
+                schedule.setItems(currentDayLessons);
+            }
+        });
+
         schedule.getColumns().addAll(numberOfLesson, hour, classroom, subject, teacher);
         schedule.setItems(currentDayLessons);
+
     }
 
     @FXML
@@ -142,7 +148,7 @@ public class MainController implements Initializable {
     }
 
     private void scroll(int direction) {
-        int currentIndex = dayListView.getSelectionModel().getSelectedIndex();
+   int currentIndex = dayListView.getSelectionModel().getSelectedIndex();
         int newIndex = currentIndex + direction;
 
         if (newIndex >= 0 && newIndex < daysOfWeek.size()) {

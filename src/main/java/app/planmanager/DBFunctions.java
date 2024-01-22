@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class DBFunctions {
 
-    public ArrayList<Lesson> getAllPlanInformation(Connection connection) {
+    public ArrayList<Lesson> getAllPlanInformation(Connection connection, String dayName) {
         PreparedStatement statement;
         ResultSet resultSet;
 
@@ -19,8 +19,10 @@ public class DBFunctions {
                     SELECT *
                     FROM public."INF_1" as i
                     INNER JOIN public."Subjects" as s ON i."Subject" = s."SubjectID"
-                    INNER JOIN public."Users" as u ON s."SubjectTeacher" = u."UserID";""";
+                    INNER JOIN public."Users" as u ON s."SubjectTeacher" = u."UserID"
+                    WHERE "DayName" = ?;""";
             statement = connection.prepareStatement(getPlanInformation);
+            statement.setString(1, dayName);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {

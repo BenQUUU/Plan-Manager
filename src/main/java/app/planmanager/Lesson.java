@@ -9,7 +9,7 @@ public class Lesson {
     private final SimpleIntegerProperty classroom;
     private final SimpleStringProperty subjectName;
     private final SimpleStringProperty subjectTeacherInitials;
-    private SimpleStringProperty hour;
+    private final SimpleStringProperty hour = new SimpleStringProperty("");
 
     public Lesson(String dayName, int lessonNumber, int classroom, String subjectName, String teacherName, String teacherSurname) {
         this.dayName = new SimpleStringProperty(dayName);
