@@ -3,11 +3,9 @@ package app.planmanager;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DBFunctions {
 
@@ -16,7 +14,6 @@ public class DBFunctions {
         ResultSet resultSet;
 
         ArrayList<Lesson> lessonList = new ArrayList<>();
-
         try {
             String getPlanInformation = """
                     SELECT *
@@ -161,5 +158,37 @@ public class DBFunctions {
 
         return bigInteger.toString(16);
     }
-}
 
+    public ArrayList<String> getAllTablesName(Connection connection) {
+
+        ArrayList<String> resultArray = new ArrayList<>();
+        ResultSet resultSet;
+
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            resultSet = metaData.getTables(null, "public" , "%", new String[]{"TABLE"});
+
+            while(resultSet.next()){
+                String tableName = resultSet.getString("TABLE_NAME");
+                if(!isTableNameInIgnoredArray(tableName)){
+                    resultArray.add(tableName);
+                }
+            }
+            return resultArray;
+        } catch (SQLException e) {
+            System.out.println("Error " + e);
+        }
+        return null;
+    }
+
+    private boolean isTableNameInIgnoredArray(String tableName) { // returns true if table name SHOULD BE IGNORED
+        ArrayList<String> tableNamesToIgnore = new ArrayList<>(Arrays.asList("Users", "Subjects", "Major"));
+        for (String s : tableNamesToIgnore) {
+            if (s.equals(tableName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
