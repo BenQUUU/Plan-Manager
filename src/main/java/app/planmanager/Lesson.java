@@ -3,7 +3,9 @@ package app.planmanager;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Lesson {
+import java.util.ArrayList;
+
+public class Lesson implements Comparable<Lesson> {
     private final SimpleStringProperty dayName;
     private final SimpleIntegerProperty lessonNumber;
     private final SimpleIntegerProperty classroom;
@@ -15,7 +17,7 @@ public class Lesson {
         this.lessonNumber = new SimpleIntegerProperty(lessonNumber);
         this.classroom = new SimpleIntegerProperty(classroom);
         this.subjectName = new SimpleStringProperty(subjectName);
-        this.subjectTeacherInitials = new SimpleStringProperty(teacherName.substring(0,1) + teacherSurname.charAt(0));
+        this.subjectTeacherInitials = new SimpleStringProperty(teacherName.substring(0, 1) + teacherSurname.charAt(0));
     }
 
     public String getDayName() {
@@ -87,5 +89,10 @@ public class Lesson {
                 ", subjectName=" + subjectName +
                 ", subjectTeacherInitials=" + subjectTeacherInitials +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Lesson otherLesson) {
+        return Integer.compare(this.lessonNumber.get(), otherLesson.getLessonNumber());
     }
 }
