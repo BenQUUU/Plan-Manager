@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -44,13 +43,6 @@
           <placeholder>
               <Label text="Wybierz plan" />
           </placeholder>
-         <columns>
-            <TableColumn fx:id="numberOfLesson" prefWidth="108.0" resizable="false" text="NR" />
-            <TableColumn fx:id="hour" prefWidth="129.0" resizable="false" text="GODZ" />
-            <TableColumn fx:id="subject" minWidth="20.0" prefWidth="247.0" resizable="false" sortable="false" text="PRZEDMIOT" />
-            <TableColumn fx:id="teacher" minWidth="20.0" prefWidth="206.0" resizable="false" sortable="false" text="NAUCZYCIEL" />
-            <TableColumn fx:id="classroom" minWidth="20.0" prefWidth="272.0" resizable="false" sortable="false" text="KLASA" />
-         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>

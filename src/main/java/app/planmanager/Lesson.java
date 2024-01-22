@@ -3,21 +3,20 @@ package app.planmanager;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-import java.util.ArrayList;
-
-public class Lesson implements Comparable<Lesson> {
+public class Lesson {
     private final SimpleStringProperty dayName;
     private final SimpleIntegerProperty lessonNumber;
     private final SimpleIntegerProperty classroom;
     private final SimpleStringProperty subjectName;
     private final SimpleStringProperty subjectTeacherInitials;
+    private SimpleStringProperty hour;
 
     public Lesson(String dayName, int lessonNumber, int classroom, String subjectName, String teacherName, String teacherSurname) {
         this.dayName = new SimpleStringProperty(dayName);
         this.lessonNumber = new SimpleIntegerProperty(lessonNumber);
         this.classroom = new SimpleIntegerProperty(classroom);
         this.subjectName = new SimpleStringProperty(subjectName);
-        this.subjectTeacherInitials = new SimpleStringProperty(teacherName.substring(0, 1) + teacherSurname.charAt(0));
+        this.subjectTeacherInitials = new SimpleStringProperty(teacherName.substring(0,1) + teacherSurname.charAt(0));
     }
 
     public String getDayName() {
@@ -91,8 +90,53 @@ public class Lesson implements Comparable<Lesson> {
                 '}';
     }
 
-    @Override
-    public int compareTo(Lesson otherLesson) {
-        return Integer.compare(this.lessonNumber.get(), otherLesson.getLessonNumber());
+    public String getHour() {
+        return hour.get();
+    }
+
+    public SimpleStringProperty hourProperty() {
+        return hour;
+    }
+
+    public void setHour() {
+        switch(this.lessonNumber.get()){
+            case 1:
+                this.hour.set("8:00-8:45");
+                break;
+            case 2:
+                this.hour.set("9:00-9:45");
+                break;
+            case 3:
+                this.hour.set("10:00-10:45");
+                break;
+            case 4:
+                this.hour.set("11:00-11:45");
+                break;
+            case 5:
+                this.hour.set("12:00-12:45");
+                break;
+            case 6:
+                this.hour.set("13:00-13:45");
+                break;
+            case 7:
+                this.hour.set("14:00-14:45");
+                break;
+            case 8:
+                this.hour.set("15:00-15:45");
+                break;
+            case 9:
+                this.hour.set("16:00-16:45");
+                break;
+            case 10:
+                this.hour.set("17:00-17:45");
+                break;
+            default:
+                break;
+        }
+
+
+
+
+
     }
 }

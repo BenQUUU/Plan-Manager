@@ -9,10 +9,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -40,22 +43,22 @@ public class MainController implements Initializable {
     private Label userData;
 
     @FXML
-    private TableColumn<Lesson, String> classroom;
+    private TableColumn<Lesson, String> classroom = new TableColumn<>("KLASA");
 
     @FXML
-    private TableColumn<Lesson, String> hour;
+    private TableColumn<Lesson, String> hour = new TableColumn<>("GODZINA");
 
     @FXML
-    private TableColumn<Lesson, Integer> numberOfLesson;
+    private TableColumn<Lesson, Integer> numberOfLesson = new TableColumn<>("NR");
 
     @FXML
     private Button prevButton;
 
     @FXML
-    private TableColumn<Lesson, String> subject;
+    private TableColumn<Lesson, String> subject = new TableColumn<>("PRZEDMIOT");
 
     @FXML
-    private TableColumn<Lesson, String> teacher;
+    private TableColumn<Lesson, String> teacher = new TableColumn<>("NAUCZYCIEL");
 
     @FXML
     private Button nextButton;
@@ -67,8 +70,15 @@ public class MainController implements Initializable {
 
     private User currentUser;
 
+    private ObservableList<Lesson> currentDayLessons;
+    private String currentDay;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        DBConnector dbConnection = new DBConnector();
+        Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
+        DBFunctions dbFunctions = new DBFunctions();
+
         loginButton.setOnAction(e -> onLoginButtonClick());
 
         daysOfWeek = FXCollections.observableArrayList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
@@ -76,10 +86,30 @@ public class MainController implements Initializable {
 
         // Ustaw domyślny dzień
         dayListView.getSelectionModel().selectFirst();
+        dayListView.getSelectionModel().selectedItemProperty().addListener((daysOfWeek, oldValue, newValue) -> {
+            if(newValue != null){
+                currentDay = newValue;
+            }
+        });
 
         // Obsługa przycisków
         prevButton.setOnAction(event -> scroll(-1));
         nextButton.setOnAction(event -> scroll(1));
+
+        currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection));
+
+        for(Lesson l: currentDayLessons){
+            l.setHour();
+        }
+
+        numberOfLesson.setCellValueFactory(new PropertyValueFactory<>("lessonNumber"));
+        hour.setCellValueFactory(new PropertyValueFactory<>("hour"));
+        classroom.setCellValueFactory(new PropertyValueFactory<>("classroom"));
+        subject.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
+        teacher.setCellValueFactory(new PropertyValueFactory<>("subjectTeacherInitials"));
+
+        schedule.getColumns().addAll(numberOfLesson, hour, classroom, subject, teacher);
+        schedule.setItems(currentDayLessons);
     }
 
     @FXML
