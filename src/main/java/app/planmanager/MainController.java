@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -66,29 +65,22 @@ public class MainController implements Initializable {
     @FXML
     private ListView<String> dayListView;
 
-    private ObservableList<String> daysOfWeek;
+    @FXML
+    private final ObservableList<String> daysOfWeek = FXCollections.observableArrayList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");;
 
     private User currentUser;
 
     private ObservableList<Lesson> currentDayLessons;
-    private String currentDay;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         DBConnector dbConnection = new DBConnector();
         Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
+        DBFunctions dbFunctions = new DBFunctions();
 
-        loginButton.setOnAction(e -> onLoginButtonClick());
-
-        daysOfWeek = FXCollections.observableArrayList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
         dayListView.setItems(daysOfWeek);
 
         dayListView.getSelectionModel().selectFirst();
-
-        // Obsługa przycisków
-        prevButton.setOnAction(event -> scroll(-1));
-        nextButton.setOnAction(event -> scroll(1));
 
         numberOfLesson.setCellValueFactory(new PropertyValueFactory<>("lessonNumber"));
         hour.setCellValueFactory(new PropertyValueFactory<>("hour"));
@@ -96,7 +88,6 @@ public class MainController implements Initializable {
         subject.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         teacher.setCellValueFactory(new PropertyValueFactory<>("subjectTeacherInitials"));
 
-        DBFunctions dbFunctions = new DBFunctions();
         currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, "Monday"));
 
         for (Lesson l : currentDayLessons) {
@@ -116,6 +107,10 @@ public class MainController implements Initializable {
         schedule.getColumns().addAll(numberOfLesson, hour, classroom, subject, teacher);
         schedule.setItems(currentDayLessons);
 
+        // Obsługa przycisków
+        prevButton.setOnAction(event -> scroll(-1));
+        nextButton.setOnAction(event -> scroll(1));
+        loginButton.setOnAction(e -> onLoginButtonClick());
     }
 
     @FXML
