@@ -1,6 +1,5 @@
 package app.planmanager;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ResourceBundle;
+
+import static app.planmanager.WindowCreator.createNewWindow;
 
 
 public class MainController implements Initializable {
@@ -111,6 +112,7 @@ public class MainController implements Initializable {
         prevButton.setOnAction(event -> scroll(-1));
         nextButton.setOnAction(event -> scroll(1));
         loginButton.setOnAction(e -> onLoginButtonClick());
+        addPlanButton.setOnAction(e -> createNewWindow("addPlanWindow.fxml", "Nowy plan"));
     }
 
     @FXML
@@ -143,7 +145,7 @@ public class MainController implements Initializable {
     }
 
     private void scroll(int direction) {
-   int currentIndex = dayListView.getSelectionModel().getSelectedIndex();
+    int currentIndex = dayListView.getSelectionModel().getSelectedIndex();
         int newIndex = currentIndex + direction;
 
         if (newIndex >= 0 && newIndex < daysOfWeek.size()) {
