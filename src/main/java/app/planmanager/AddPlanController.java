@@ -1,5 +1,6 @@
 package app.planmanager;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -37,6 +38,8 @@ public class AddPlanController implements Initializable {
             if(dbFunctions.addNewPlanToDB(connection, newPlanName)){
                 infoLabel.setTextFill(Color.GREEN);
                 infoLabel.setText("Pomyślnie dodano plan do bazy");
+
+                MainController.classes.addFirst(newPlanName);
             }else{
                 infoLabel.setTextFill(Color.RED);
                 infoLabel.setText("Nazwa tabeli już istnieje");

@@ -35,7 +35,7 @@ public class MainController implements Initializable {
     @FXML
     private ComboBox<String> listOfMajors;
 
-    private ObservableList<String> classes;
+    public static ObservableList<String> classes;
 
     @FXML
     private Button loginButton;
