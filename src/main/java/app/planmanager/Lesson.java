@@ -16,7 +16,7 @@ public class Lesson {
         this.lessonNumber = new SimpleIntegerProperty(lessonNumber);
         this.classroom = new SimpleIntegerProperty(classroom);
         this.subjectName = new SimpleStringProperty(subjectName);
-        this.subjectTeacherInitials = new SimpleStringProperty(teacherName.substring(0,1) + teacherSurname.charAt(0));
+        this.subjectTeacherInitials = new SimpleStringProperty(teacherName.substring(0, 1) + teacherSurname.charAt(0));
     }
 
     public String getDayName() {
@@ -99,7 +99,7 @@ public class Lesson {
     }
 
     public void setHour() {
-        switch(this.lessonNumber.get()){
+        switch (this.lessonNumber.get()) {
             case 1:
                 this.hour.set("8:00-8:45");
                 break;
@@ -133,10 +133,5 @@ public class Lesson {
             default:
                 break;
         }
-
-
-
-
-
     }
 }

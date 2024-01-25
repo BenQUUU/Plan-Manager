@@ -9,18 +9,19 @@ import java.util.Arrays;
 
 public class DBFunctions {
 
-    public ArrayList<Lesson> getAllPlanInformation(Connection connection, String dayName) {
+    public ArrayList<Lesson> getAllPlanInformation(Connection connection, String dayName, String major) {
         PreparedStatement statement;
         ResultSet resultSet;
 
         ArrayList<Lesson> lessonList = new ArrayList<>();
         try {
-            String getPlanInformation = """
-                    SELECT *
-                    FROM public."INF_1" as i
-                    INNER JOIN public."Subjects" as s ON i."Subject" = s."SubjectID"
-                    INNER JOIN public."Users" as u ON s."SubjectTeacher" = u."UserID"
-                    WHERE "DayName" = ?;""";
+            if (major == null) {
+                major = "INF_1";
+            }
+            String getPlanInformation = "SELECT * FROM public." + "\"" + major + "\"" + " as i" +
+                    " INNER JOIN public.\"Subjects\" as s ON i.\"Subject\" = s.\"SubjectID\"\n" +
+                    " INNER JOIN public.\"Users\" as u ON s.\"SubjectTeacher\" = u.\"UserID\" WHERE \"DayName\" = ?;";
+
             statement = connection.prepareStatement(getPlanInformation);
             statement.setString(1, dayName);
             resultSet = statement.executeQuery();
@@ -42,63 +43,6 @@ public class DBFunctions {
             return null;
         }
     }
-
-//    public User getUserEmailAndPassword(Connection connection, String email, String password) {
-//        PreparedStatement statement;
-//        ResultSet resultSet;
-//
-//        try {
-//            String getUserEmailAndPassword = "SELECT \"Email\", \"Password\" FROM public.\"Users\" WHERE \"Email\" = ? AND \"Password\" = ?;";
-//
-//            statement = connection.prepareStatement(getUserEmailAndPassword);
-//            statement.setString(1, email);
-//            statement.setString(2, password);
-//            resultSet = statement.executeQuery();
-//
-//            if (resultSet.next()) {
-//                //If resultSet is not empty, then get rest of user information
-//                return getAllUserInformation(connection, email);
-//            } else {
-//                throw new UserPrincipalNotFoundException("Incorrect email or password!");
-//            }
-//
-//        } catch (SQLException e) {
-//            System.out.println("Error: " + e);
-//            return null;
-//        } catch (UserPrincipalNotFoundException e) {
-//            System.out.println("Error: " + e.getName());
-//            return null;
-//        }
-//    }
-
-//    private User getAllUserInformation(Connection connection, String email) {
-//        PreparedStatement statement;
-//        ResultSet resultSet;
-//
-//        try {
-//            String getAllUserInformationQuery = "SELECT * FROM public.\"Users\" WHERE \"Email\" = ?;";
-//            statement = connection.prepareStatement(getAllUserInformationQuery);
-//            statement.setString(1, email);
-//            resultSet = statement.executeQuery();
-//
-//            if (resultSet.next()) {
-//
-//                int userId = resultSet.getInt("UserID");
-//                String name = resultSet.getString("Name");
-//                String surname = resultSet.getString("Surname");
-//                String group = resultSet.getString("Group");
-//                String password = resultSet.getString("Password"); // HASHED
-//                User user = new User(name, surname, email, password, Group.valueOf(group.toLowerCase()));
-//                user.setUserID_(userId);
-//                return user;
-//            } else {
-//                return null;
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
 
     public User checkEmailAndPasswordValidity(Connection connection, String email, String password) {
         PreparedStatement statement;
@@ -152,13 +96,47 @@ public class DBFunctions {
         }
     }
 
-    private String hashPassword(String password) throws NoSuchAlgorithmException {
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+    public boolean addNewPlanToDB(Connection connection, String planName) {
+        PreparedStatement statement;
 
-        byte[] md = messageDigest.digest(password.getBytes());
-        BigInteger bigInteger = new BigInteger(1, md);
+        try {
+            String checkTableExistenceQuery = "SELECT EXISTS ( " +
+                    "   SELECT 1 " +
+                    "   FROM information_schema.tables " +
+                    "   WHERE table_name = ? " +
+                    "   )";
 
-        return bigInteger.toString(16);
+            PreparedStatement checkTableExistenceStatement = connection.prepareStatement(checkTableExistenceQuery);
+            checkTableExistenceStatement.setString(1, planName);
+            ResultSet resultSet = checkTableExistenceStatement.executeQuery();
+
+            if (resultSet.next()) {
+                if (resultSet.getBoolean(1)) {
+                    System.out.println("TABELA JUŻ ISTNIEJE");
+                    return false;
+                }
+            }
+
+            String addNewPlanToDBQuery = "CREATE TABLE IF NOT EXISTS public." + "\"" + planName + "\"" +
+                    " ( " +
+                    "    \"DayName\" character varying(16) COLLATE pg_catalog.\"default\" NOT NULL, " +
+                    "    \"LessonNumber\" integer NOT NULL, " +
+                    "    \"Classroom\" integer NOT NULL, " +
+                    "    \"Subject\" integer NOT NULL, " +
+                    "    CONSTRAINT \"SubjectId\" FOREIGN KEY (\"Subject\") " +
+                    "        REFERENCES public.\"Subjects\" (\"SubjectID\") MATCH SIMPLE " +
+                    "        ON UPDATE NO ACTION " +
+                    "        ON DELETE NO ACTION " +
+                    "        NOT VALID " +
+                    ")";
+            statement = connection.prepareStatement(addNewPlanToDBQuery);
+            statement.executeUpdate();
+            System.out.println("UTWORZONO");
+        } catch (SQLException e) {
+            System.out.println("ERROR NIE UTWORZONO: " + e);
+            return false;
+        }
+        return true;
     }
 
     public ArrayList<String> getAllTablesName(Connection connection) {
@@ -169,11 +147,11 @@ public class DBFunctions {
         try {
             DatabaseMetaData metaData = connection.getMetaData();
 
-            resultSet = metaData.getTables(null, "public" , "%", new String[]{"TABLE"});
+            resultSet = metaData.getTables(null, "public", "%", new String[]{"TABLE"});
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
-                if(!isTableNameInIgnoredArray(tableName)){
+                if (!isTableNameInIgnoredArray(tableName)) {
                     resultArray.add(tableName);
                 }
             }
@@ -182,6 +160,15 @@ public class DBFunctions {
             System.out.println("Error " + e);
         }
         return null;
+    }
+
+    private String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+        byte[] md = messageDigest.digest(password.getBytes());
+        BigInteger bigInteger = new BigInteger(1, md);
+
+        return bigInteger.toString(16);
     }
 
     private boolean isTableNameInIgnoredArray(String tableName) { // returns true if table name SHOULD BE IGNORED
@@ -194,3 +181,15 @@ public class DBFunctions {
         return false;
     }
 }
+
+//DO $$
+//BEGIN
+//IF EXISTS (SELECT 1 FROM public."Bartek" WHERE "LessonNumber" = 2) THEN
+//UPDATE public."Bartek"
+//SET "DayName" = 'Monday', "Classroom" = 100, "Subject" = 1
+//WHERE "LessonNumber" = 2;
+//ELSE
+//INSERT INTO public."Bartek" ("DayName", "LessonNumber", "Classroom", "Subject")
+//VALUES ('Monday', 2, 100, 1);
+//END IF;
+//END $$;

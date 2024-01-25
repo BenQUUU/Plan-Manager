@@ -1,4 +1,5 @@
 package app.planmanager;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -63,7 +64,7 @@ public class RegisterController implements Initializable {
         registerButton.setDisable(!fieldsNotEmpty);
     }
 
-    private boolean isFieldsEmpty(){
+    private boolean isFieldsEmpty() {
         return !email.getText().trim().isEmpty() &&
                 !email2.getText().trim().isEmpty() &&
                 !name.getText().trim().isEmpty() &&
@@ -83,27 +84,27 @@ public class RegisterController implements Initializable {
     }
 
     @FXML
-    private void createNewUser(){
-        try{
+    private void createNewUser() {
+        try {
             String userEmail = email.getText();
             String userPassword = password.getText();
             String userName = name.getText();
             String userSurname = surname.getText();
 
-            if((!Objects.equals(userEmail, email2.getText())) || (!Objects.equals(userPassword, password2.getText()))){
+            if ((!Objects.equals(userEmail, email2.getText())) || (!Objects.equals(userPassword, password2.getText()))) {
                 throw new InputMismatchException("Emaile bądź hasła różnią się od siebie!");
-            } else if(checkUserPassword(userPassword)){
+            } else if (checkUserPassword(userPassword)) {
                 throw new InputMismatchException("Brak znaków specjalnych lub zła długość hasła!");
             } else {
 
                 DBConnector dbConnector = new DBConnector();
                 Connection connection = dbConnector.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
 
-                try{
+                try {
                     DBFunctions dbFunctions = new DBFunctions();
-                    User user = new User(userName,userSurname,userEmail,userPassword, Group.user);
+                    User user = new User(userName, userSurname, userEmail, userPassword, Group.user);
                     dbFunctions.registerUser(connection, user);
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("Error: " + e);
                 }
 
@@ -112,7 +113,7 @@ public class RegisterController implements Initializable {
 
                 dbConnector.closeDatabase(connection);
             }
-        } catch (InputMismatchException e){
+        } catch (InputMismatchException e) {
             infoLabel.setTextFill(Color.RED);
             infoLabel.setText(e.getMessage());
         }

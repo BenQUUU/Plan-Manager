@@ -34,7 +34,13 @@ public class AddPlanController implements Initializable {
             DBFunctions dbFunctions = new DBFunctions();
 
             //@TODO miejsce na funkcje (wywalić potem)!
-
+            if(dbFunctions.addNewPlanToDB(connection, newPlanName)){
+                infoLabel.setTextFill(Color.GREEN);
+                infoLabel.setText("Pomyślnie dodano plan do bazy");
+            }else{
+                infoLabel.setTextFill(Color.RED);
+                infoLabel.setText("Nazwa tabeli już istnieje");
+            }
 
             dbConnection.closeDatabase(connection);
         }catch (Exception e){
@@ -42,7 +48,5 @@ public class AddPlanController implements Initializable {
             infoLabel.setText("error");
         }
 
-        infoLabel.setTextFill(Color.GREEN);
-        infoLabel.setText("Pomyślnie dodano plan do bazy");
     }
 }

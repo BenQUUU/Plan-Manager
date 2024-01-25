@@ -71,7 +71,8 @@ public class MainController implements Initializable {
     private ListView<String> dayListView;
 
     @FXML
-    private final ObservableList<String> daysOfWeek = FXCollections.observableArrayList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");;
+    private final ObservableList<String> daysOfWeek = FXCollections.observableArrayList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
+    ;
 
     private User currentUser;
 
@@ -93,17 +94,13 @@ public class MainController implements Initializable {
         subject.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         teacher.setCellValueFactory(new PropertyValueFactory<>("subjectTeacherInitials"));
 
-        currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, "Monday"));
 
-        for (Lesson l : currentDayLessons) {
-            l.setHour();
-        }
 
         schedule.getColumns().addAll(numberOfLesson, hour, classroom, subject, teacher);
         schedule.setItems(currentDayLessons);
 
         classes = FXCollections.observableArrayList(dbFunctions.getAllTablesName(connection));
-        listOfMajors = new ComboBox<>(classes);
+        listOfMajors.setItems(classes);
         listOfMajors.setPromptText("Kierunki");
         // Dodaj listener do ComboBoxa
         listOfMajors.valueProperty().addListener(new ChangeListener<String>() {
@@ -113,6 +110,12 @@ public class MainController implements Initializable {
                 updatePlan(dbFunctions, connection);
             }
         });
+
+        currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, "Monday", listOfMajors.getValue()));
+
+        for (Lesson l : currentDayLessons) {
+            l.setHour();
+        }
 
         // Obsługa przycisków
         prevButton.setOnAction(event -> scroll(-1));
@@ -151,7 +154,7 @@ public class MainController implements Initializable {
     }
 
     private void scroll(int direction) {
-    int currentIndex = dayListView.getSelectionModel().getSelectedIndex();
+        int currentIndex = dayListView.getSelectionModel().getSelectedIndex();
         int newIndex = currentIndex + direction;
 
         if (newIndex >= 0 && newIndex < daysOfWeek.size()) {
@@ -163,7 +166,7 @@ public class MainController implements Initializable {
         dayListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 currentDay = newValue;
-                currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, currentDay));
+                currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, currentDay, listOfMajors.getValue()));
                 for (Lesson l : currentDayLessons) {
                     l.setHour();
                 }
