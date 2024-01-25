@@ -1,5 +1,7 @@
 package app.planmanager;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,7 +33,9 @@ public class MainController implements Initializable {
     private Button editPlanButton;
 
     @FXML
-    private MenuButton listOfMajors;
+    private ComboBox<String> listOfMajors;
+
+    private ObservableList<String> classes;
 
     @FXML
     private Button loginButton;
@@ -72,6 +76,7 @@ public class MainController implements Initializable {
     private User currentUser;
 
     private ObservableList<Lesson> currentDayLessons;
+    private String currentDay;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,7 +85,6 @@ public class MainController implements Initializable {
         DBFunctions dbFunctions = new DBFunctions();
 
         dayListView.setItems(daysOfWeek);
-
         dayListView.getSelectionModel().selectFirst();
 
         numberOfLesson.setCellValueFactory(new PropertyValueFactory<>("lessonNumber"));
@@ -95,18 +99,20 @@ public class MainController implements Initializable {
             l.setHour();
         }
 
-        dayListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, newValue));
-                for (Lesson l : currentDayLessons) {
-                    l.setHour();
-                }
-                schedule.setItems(currentDayLessons);
-            }
-        });
-
         schedule.getColumns().addAll(numberOfLesson, hour, classroom, subject, teacher);
         schedule.setItems(currentDayLessons);
+
+        classes = FXCollections.observableArrayList(dbFunctions.getAllTablesName(connection));
+        listOfMajors = new ComboBox<>(classes);
+        listOfMajors.setPromptText("Kierunki");
+        // Dodaj listener do ComboBoxa
+        listOfMajors.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // Tutaj dodaj kod do aktualizacji planu lekcji dla wybranej klasy
+                updatePlan(dbFunctions, connection);
+            }
+        });
 
         // Obsługa przycisków
         prevButton.setOnAction(event -> scroll(-1));
@@ -151,5 +157,18 @@ public class MainController implements Initializable {
         if (newIndex >= 0 && newIndex < daysOfWeek.size()) {
             dayListView.getSelectionModel().select(newIndex);
         }
+    }
+    @FXML
+    private void updatePlan(DBFunctions dbFunctions, Connection connection){
+        dayListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                currentDay = newValue;
+                currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, currentDay));
+                for (Lesson l : currentDayLessons) {
+                    l.setHour();
+                }
+                schedule.setItems(currentDayLessons);
+            }
+        });
     }
 }
