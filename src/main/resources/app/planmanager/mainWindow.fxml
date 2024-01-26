@@ -28,8 +28,8 @@
          <children>
             <Label alignment="CENTER" prefHeight="30.0" prefWidth="200.0" />
             <Button fx:id="addPlanButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" text="Dodaj plan" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-            <Button fx:id="deletePlanButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" text="Usuń plan" textFill="RED" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
-            <Button fx:id="editPlanButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" text="Edytuj plan" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+            <Button fx:id="deletePlanButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" text="Usuń plan" textFill="RED" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+            <Button fx:id="editPlanButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" text="Edytuj plan" GridPane.rowIndex="5" GridPane.valignment="BOTTOM" />
             <ComboBox fx:id="listOfMajors" prefHeight="30.0" prefWidth="160.0" promptText="Kierunki" />
          </children>
       </GridPane>

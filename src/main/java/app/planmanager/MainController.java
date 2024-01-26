@@ -1,5 +1,7 @@
 package app.planmanager;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -72,9 +74,10 @@ public class MainController implements Initializable {
 
     @FXML
     private final ObservableList<String> daysOfWeek = FXCollections.observableArrayList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
-    ;
 
     private User currentUser;
+
+    private ObjectProperty<User> currentUserProperty = new SimpleObjectProperty<>();
 
     private ObservableList<Lesson> currentDayLessons;
     private String currentDay;
@@ -93,8 +96,6 @@ public class MainController implements Initializable {
         classroom.setCellValueFactory(new PropertyValueFactory<>("classroom"));
         subject.setCellValueFactory(new PropertyValueFactory<>("subjectName"));
         teacher.setCellValueFactory(new PropertyValueFactory<>("subjectTeacherInitials"));
-
-
 
         schedule.getColumns().addAll(numberOfLesson, hour, classroom, subject, teacher);
         schedule.setItems(currentDayLessons);
@@ -122,6 +123,19 @@ public class MainController implements Initializable {
         nextButton.setOnAction(event -> scroll(1));
         loginButton.setOnAction(e -> onLoginButtonClick());
         addPlanButton.setOnAction(e -> createNewWindow("addPlanWindow.fxml", "Nowy plan"));
+        editPlanButton.setOnAction(e -> openEditWindow());
+
+        addPlanButton.setDisable(true);
+        editPlanButton.setDisable(true);
+        deletePlanButton.setDisable(true);
+
+        // Dodaj nasłuchiwacz zmian w currentUserProperty
+        currentUserProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                // Tutaj reaguj na zmiany w currentUser
+                updatePermissions();
+            }
+        });
     }
 
     @FXML
@@ -151,6 +165,8 @@ public class MainController implements Initializable {
         this.currentUser = user;
         // Aktualizuj etykietę z danymi użytkownika
         userData.setText("Zalogowany jako: " + user.getName_() + " " + user.getSurname_());
+
+        currentUserProperty.set(user);
     }
 
     private void scroll(int direction) {
@@ -173,5 +189,36 @@ public class MainController implements Initializable {
                 schedule.setItems(currentDayLessons);
             }
         });
+    }
+
+    @FXML
+    private void openEditWindow() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("editPlanWindow.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Edycja planu");
+            stage.setScene(scene);
+            EditPlanController editController = fxmlLoader.getController();
+            editController.setDaysOfWeek(daysOfWeek);
+            editController.setClasses(classes);
+
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    private void updatePermissions(){
+        addPlanButton.setDisable(false);
+        editPlanButton.setDisable(false);
+        deletePlanButton.setDisable(false);
+
+        if ("teacher".equals(currentUser.getGroup_())) {
+            // Ustaw przycisk deletePlanButton na nieaktywny dla nauczycieli
+            deletePlanButton.setDisable(true);
+        }
     }
 }
