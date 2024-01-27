@@ -139,6 +139,114 @@ public class DBFunctions {
         return true;
     }
 
+    public boolean editPlan(Connection connection, EditPlanContainer planContainer){
+
+        PreparedStatement statement;
+
+
+        int subjectId = getSubjectId(connection,planContainer.subject());
+        if(subjectId == -1){
+            System.out.println("Error, no subject in DB");
+            return false;
+        }
+
+        String editPlanQuery = "";
+        try{
+            if(doesRowExistsInTable(connection, planContainer.planName(), planContainer.lessonNumber())){
+                editPlanQuery = "UPDATE public." + "\"" + planContainer.planName() + "\" " +
+                        "SET \"DayName\" = ?, \"Classroom\" = ?, \"Subject\" = ? " +
+                        "WHERE \"LessonNumber\" = ?;";
+
+                statement = connection.prepareStatement(editPlanQuery);
+
+                statement.setString(1, planContainer.dayName());
+                statement.setInt(2, planContainer.classroom());
+                statement.setInt(3, subjectId);
+                statement.setInt(4, planContainer.lessonNumber());
+            }else{
+                editPlanQuery = "INSERT INTO public." + "\"" + planContainer.planName() + "\" " +
+                        "(\"DayName\", \"LessonNumber\", \"Classroom\", \"Subject\") " +
+                        "VALUES (?, ?, ? ,?);";
+
+                statement = connection.prepareStatement(editPlanQuery);
+
+                statement.setString(1, planContainer.dayName());
+                statement.setInt(2, planContainer.lessonNumber());
+                statement.setInt(3, planContainer.classroom());
+                statement.setInt(4, subjectId);
+            }
+            System.out.println(editPlanQuery);
+//            editPlanQuery = "DO $$ " +
+//                    "BEGIN " +
+//                    "IF EXISTS (SELECT 1 FROM public." + "\"" + planContainer.planName() + "\" " +
+//                    "WHERE \"LessonNumber\" = ? ) "+
+//                    "THEN " +
+//                    "UPDATE public." + "\"" + planContainer.planName() + "\" " +
+//                    "SET \"DayName\" = ?, \"Classroom\" = ?, \"Subject\" = ? "+
+//                    "WHERE \"LessonNumber\" = ?; "+
+//                    "ELSE "+
+//                    "INSERT INTO public.." + "\"" + planContainer.planName() + "\" " +
+//                    "(\"DayName\", \"LessonNumber\", \"Classroom\", \"Subject\") " +
+//                    "VALUES (?, ?, ? ,?);" +
+//                    "END IF; " +
+//                    "END $$";
+
+            statement.executeUpdate();
+        }catch (SQLException e){
+            System.out.println("Error with edit: " + e);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deletePlan(Connection connection, String planName){
+        PreparedStatement statement;
+
+        try{
+            String deletePlanQuery = "DROP TABLE public.\""+ planName +"\";";
+            statement = connection.prepareStatement(deletePlanQuery);
+
+            statement.executeUpdate();
+            return true;
+        }catch(SQLException e ){
+            System.out.println("Error Delete " + e);
+            return false;
+        }
+    }
+
+    private boolean doesRowExistsInTable(Connection connection, String planName, int lessonNumber){
+        PreparedStatement statement;
+
+        try{
+            String checkRowExistenceQuery = "SELECT 1 FROM public." + "\"" + planName + "\" " +
+                    "WHERE \"LessonNumber\" = ?";
+            statement = connection.prepareStatement(checkRowExistenceQuery);
+            statement.setInt(1, lessonNumber);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        }catch (SQLException e ){
+            System.out.println("Error With Row Existence");
+            return false;
+        }
+    }
+
+    private int getSubjectId(Connection connection, String subjectName){
+        PreparedStatement statement;
+        ResultSet resultSet;
+        try{
+            String getSubjectIdQuery = "SELECT \"SubjectID\" FROM public.\"Subjects\" WHERE \"SubjectName\" = ?;";
+            statement = connection.prepareStatement(getSubjectIdQuery);
+            statement.setString(1, subjectName);
+            resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return resultSet.getInt("SubjectID");
+            }
+            return -1;
+        }catch (SQLException e ){
+            System.out.println("Error " + e);
+        }
+        return -1;
+    }
     public ArrayList<String> getAllTablesName(Connection connection) {
 
         ArrayList<String> resultArray = new ArrayList<>();
@@ -182,14 +290,3 @@ public class DBFunctions {
     }
 }
 
-//DO $$
-//BEGIN
-//IF EXISTS (SELECT 1 FROM public."Bartek" WHERE "LessonNumber" = 2) THEN
-//UPDATE public."Bartek"
-//SET "DayName" = 'Monday', "Classroom" = 100, "Subject" = 1
-//WHERE "LessonNumber" = 2;
-//ELSE
-//INSERT INTO public."Bartek" ("DayName", "LessonNumber", "Classroom", "Subject")
-//VALUES ('Monday', 2, 100, 1);
-//END IF;
-//END $$;

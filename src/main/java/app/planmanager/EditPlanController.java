@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ResourceBundle;
 
 public class EditPlanController implements Initializable {
@@ -64,7 +65,21 @@ public class EditPlanController implements Initializable {
     @FXML
     private void editPlan(){
         try{
+
+            DBConnector dbConnection = new DBConnector();
+            Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
+            DBFunctions dbFunctions = new DBFunctions();
+
             int classroomFromUser = Integer.parseInt(classroom.getText());
+
+            EditPlanContainer planContainer = new EditPlanContainer("INF_1", "Monday", 9, "Physics", 101);
+
+            if (dbFunctions.editPlan(connection, planContainer)) {
+                System.out.println("POPRAWNIE ZEDYTOWAŁO");
+            } else {
+                System.out.println("COSIK NIE POSZŁO HEHE");
+            }
+
         }catch(NumberFormatException e){
             infoLabel.setTextFill(Color.RED);
             infoLabel.setText("Niewłaściwy numer klasy");
