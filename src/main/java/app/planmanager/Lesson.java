@@ -79,17 +79,6 @@ public class Lesson {
         this.subjectTeacherInitials.set(subjectTeacherInitials);
     }
 
-    @Override
-    public String toString() {
-        return "Lesson{" +
-                "dayName=" + dayName +
-                ", lessonNumber=" + lessonNumber +
-                ", classroom=" + classroom +
-                ", subjectName=" + subjectName +
-                ", subjectTeacherInitials=" + subjectTeacherInitials +
-                '}';
-    }
-
     public String getHour() {
         return hour.get();
     }

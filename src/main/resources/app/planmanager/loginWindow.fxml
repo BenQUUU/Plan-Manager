@@ -9,12 +9,12 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.planmanager.LoginController">
    <children>
-      <Button fx:id="loginButton" layoutX="127.0" layoutY="243.0" mnemonicParsing="false" text="Log in" />
-      <Button fx:id="registerButton" layoutX="219.0" layoutY="243.0" mnemonicParsing="false" text="Register" />
+      <Button fx:id="loginButton" layoutX="104.0" layoutY="243.0" mnemonicParsing="false" text="ZALOGUJ SIĘ" />
+      <Button fx:id="registerButton" layoutX="219.0" layoutY="243.0" mnemonicParsing="false" text="REJESTRACJA" />
       <TextField fx:id="userPassedEmail" layoutX="127.0" layoutY="143.0" promptText="Email" />
       <Text layoutX="187.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" />
       <Text layoutX="189.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hasło" />
       <PasswordField fx:id="userPassedPassword" layoutX="126.0" layoutY="200.0" prefHeight="25.0" prefWidth="149.0" promptText="Hasło" />
-      <Label fx:id="loginInfo" layoutX="121.0" layoutY="330.0" prefHeight="17.0" prefWidth="166.0" />
+      <Label fx:id="loginInfo" alignment="CENTER" layoutX="108.0" layoutY="335.0" prefHeight="17.0" prefWidth="193.0" textAlignment="CENTER" />
    </children>
 </AnchorPane>

@@ -14,6 +14,6 @@
       <ComboBox fx:id="subjects" layoutX="226.0" layoutY="135.0" prefWidth="150.0" promptText="Przedmiot" />
       <TextField fx:id="classroom" layoutX="226.0" layoutY="200.0" promptText="Klasa" />
       <Button fx:id="addButton" layoutX="274.0" layoutY="361.0" mnemonicParsing="false" text="DODAJ" />
-      <Label fx:id="infoLabel" alignment="CENTER" layoutX="221.0" layoutY="337.0" prefHeight="17.0" prefWidth="159.0" textAlignment="CENTER" />
+      <Label fx:id="infoLabel" alignment="CENTER" layoutX="182.0" layoutY="336.0" prefHeight="17.0" prefWidth="239.0" textAlignment="CENTER" />
    </children>
 </AnchorPane>

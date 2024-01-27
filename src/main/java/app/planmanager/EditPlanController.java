@@ -90,6 +90,7 @@ public class EditPlanController implements Initializable {
                 infoLabel.setText("Błąd podczas dodawania do bazy");
             }
 
+            dbConnection.closeDatabase(connection);
         }catch(NumberFormatException e){
             infoLabel.setTextFill(Color.RED);
             infoLabel.setText("Niewłaściwy numer klasy");

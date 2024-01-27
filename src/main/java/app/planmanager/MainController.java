@@ -105,9 +105,7 @@ public class MainController implements Initializable {
         classes = FXCollections.observableArrayList(dbFunctions.getAllTablesName(connection));
         listOfMajors.setItems(classes);
         listOfMajors.setPromptText("Kierunki");
-        if(!classes.isEmpty()){
-            listOfMajors.setValue(classes.getFirst());
-        }
+
         // Dodaj listener do ComboBoxa
         listOfMajors.valueProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -116,12 +114,6 @@ public class MainController implements Initializable {
                 updatePlan(dbFunctions, connection);
             }
         });
-
-        currentDayLessons = FXCollections.observableArrayList(dbFunctions.getAllPlanInformation(connection, "Monday", listOfMajors.getValue()));
-
-        for (Lesson l : currentDayLessons) {
-            l.setHour();
-        }
 
         // Obsługa przycisków
         prevButton.setOnAction(event -> scroll(-1));
@@ -144,6 +136,15 @@ public class MainController implements Initializable {
         });
     }
 
+    // Metoda do ustawiania danych użytkownika
+    public void setUserData(User user) {
+        this.currentUser = user;
+        // Aktualizuj etykietę z danymi użytkownika
+        userData.setText("Zalogowany jako: " + user.getName_() + " " + user.getSurname_());
+
+        currentUserProperty.set(user);
+    }
+
     @FXML
     private void onLoginButtonClick() {
         try {
@@ -164,15 +165,6 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    // Metoda do ustawiania danych użytkownika
-    public void setUserData(User user) {
-        this.currentUser = user;
-        // Aktualizuj etykietę z danymi użytkownika
-        userData.setText("Zalogowany jako: " + user.getName_() + " " + user.getSurname_());
-
-        currentUserProperty.set(user);
     }
 
     private void scroll(int direction) {
@@ -249,5 +241,6 @@ public class MainController implements Initializable {
                 }
             }
         }
+        dbConnection.closeDatabase(connection);
     }
 }

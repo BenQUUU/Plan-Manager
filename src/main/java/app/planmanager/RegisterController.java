@@ -114,7 +114,6 @@ public class RegisterController implements Initializable {
                     System.out.println("Error: " + e);
                 }
 
-
                 dbConnector.closeDatabase(connection);
             }
         } catch (InputMismatchException e) {

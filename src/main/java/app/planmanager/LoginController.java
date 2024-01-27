@@ -36,9 +36,12 @@ public class LoginController extends MainApp implements Initializable {
         registerButton.setOnAction(e -> createNewWindow("registerWindow.fxml", "Plan lekcji"));
     }
 
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     @FXML
     private void loginUserToApp() {
-
         DBConnector dbConnection = new DBConnector();
         Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
 
@@ -58,14 +61,6 @@ public class LoginController extends MainApp implements Initializable {
             loginInfo.setText("Niepoprawne dane logowania");
         }
 
-        System.out.println(user);
-
         dbConnection.closeDatabase(connection);
-
-        System.out.println(email + " " + password);
-    }
-
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
     }
 }

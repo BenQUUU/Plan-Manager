@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class DBFunctions {
-
     public ArrayList<Lesson> getAllPlanInformation(Connection connection, String dayName, String major) {
         PreparedStatement statement;
         ResultSet resultSet;
@@ -40,7 +39,6 @@ public class DBFunctions {
             lessonList.sort(lessonComparator);
             return lessonList;
         } catch (SQLException e) {
-            System.out.println("Error: " + e);
             return null;
         }
     }
@@ -71,7 +69,6 @@ public class DBFunctions {
             }
 
         } catch (SQLException | NoSuchAlgorithmException e) {
-            System.out.println("Error: " + e);
             return null;
         }
     }
@@ -93,7 +90,6 @@ public class DBFunctions {
             statement.setString(5, user.getGroup_().toUpperCase());
             statement.executeUpdate();
         } catch (SQLException | NoSuchAlgorithmException e) {
-            System.out.println("Error: " + e);
             return false;
         }
         return true;
@@ -115,7 +111,6 @@ public class DBFunctions {
 
             if (resultSet.next()) {
                 if (resultSet.getBoolean(1)) {
-                    System.out.println("TABELA JUŻ ISTNIEJE");
                     return false;
                 }
             }
@@ -134,9 +129,7 @@ public class DBFunctions {
                     ")";
             statement = connection.prepareStatement(addNewPlanToDBQuery);
             statement.executeUpdate();
-            System.out.println("UTWORZONO");
         } catch (SQLException e) {
-            System.out.println("ERROR NIE UTWORZONO: " + e);
             return false;
         }
         return true;
@@ -149,7 +142,6 @@ public class DBFunctions {
 
         int subjectId = getSubjectId(connection,planContainer.subject());
         if(subjectId == -1){
-            System.out.println("Error, no subject in DB");
             return false;
         }
 
@@ -178,11 +170,9 @@ public class DBFunctions {
                 statement.setInt(3, planContainer.classroom());
                 statement.setInt(4, subjectId);
             }
-            System.out.println(editPlanQuery);
 
             statement.executeUpdate();
         }catch (SQLException e){
-            System.out.println("Error with edit: " + e);
             return false;
         }
         return true;
@@ -198,7 +188,6 @@ public class DBFunctions {
             statement.executeUpdate();
             return true;
         }catch(SQLException e ){
-            System.out.println("Error Delete " + e);
             return false;
         }
     }
@@ -215,45 +204,11 @@ public class DBFunctions {
                 subjectArrayList.add(resultSet.getString("SubjectName"));
             }
         }catch (SQLException e){
-            System.out.println("Error WITH subjects from DB" + e );
             return null;
         }
         return subjectArrayList;
     }
 
-    private boolean doesRowExistsInTable(Connection connection, String planName, int lessonNumber){
-        PreparedStatement statement;
-
-        try{
-            String checkRowExistenceQuery = "SELECT 1 FROM public." + "\"" + planName + "\" " +
-                    "WHERE \"LessonNumber\" = ?";
-            statement = connection.prepareStatement(checkRowExistenceQuery);
-            statement.setInt(1, lessonNumber);
-            ResultSet resultSet = statement.executeQuery();
-            return resultSet.next();
-        }catch (SQLException e ){
-            System.out.println("Error With Row Existence");
-            return false;
-        }
-    }
-
-    private int getSubjectId(Connection connection, String subjectName){
-        PreparedStatement statement;
-        ResultSet resultSet;
-        try{
-            String getSubjectIdQuery = "SELECT \"SubjectID\" FROM public.\"Subjects\" WHERE \"SubjectName\" = ?;";
-            statement = connection.prepareStatement(getSubjectIdQuery);
-            statement.setString(1, subjectName);
-            resultSet = statement.executeQuery();
-            if(resultSet.next()){
-                return resultSet.getInt("SubjectID");
-            }
-            return -1;
-        }catch (SQLException e ){
-            System.out.println("Error " + e);
-        }
-        return -1;
-    }
     public ArrayList<String> getAllTablesName(Connection connection) {
 
         ArrayList<String> resultArray = new ArrayList<>();
@@ -271,11 +226,41 @@ public class DBFunctions {
                 }
             }
             return resultArray;
-        } catch (SQLException e) {
-            System.out.println("Error " + e);
-        }
+        } catch (SQLException e) {}
         return null;
     }
+
+    private boolean doesRowExistsInTable(Connection connection, String planName, int lessonNumber){
+        PreparedStatement statement;
+
+        try{
+            String checkRowExistenceQuery = "SELECT 1 FROM public." + "\"" + planName + "\" " +
+                    "WHERE \"LessonNumber\" = ?";
+            statement = connection.prepareStatement(checkRowExistenceQuery);
+            statement.setInt(1, lessonNumber);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        }catch (SQLException e ){
+            return false;
+        }
+    }
+
+    private int getSubjectId(Connection connection, String subjectName){
+        PreparedStatement statement;
+        ResultSet resultSet;
+        try{
+            String getSubjectIdQuery = "SELECT \"SubjectID\" FROM public.\"Subjects\" WHERE \"SubjectName\" = ?;";
+            statement = connection.prepareStatement(getSubjectIdQuery);
+            statement.setString(1, subjectName);
+            resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return resultSet.getInt("SubjectID");
+            }
+            return -1;
+        }catch (SQLException e ){}
+        return -1;
+    }
+
 
     private String hashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
