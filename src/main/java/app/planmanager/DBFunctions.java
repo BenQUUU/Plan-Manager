@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class DBFunctions {
 
@@ -34,6 +35,9 @@ public class DBFunctions {
                 );
                 lessonList.add(lesson);
             }
+            Comparator<Lesson> lessonComparator = Comparator.comparing(Lesson::getLessonNumber);
+
+            lessonList.sort(lessonComparator);
             return lessonList;
         } catch (SQLException e) {
             System.out.println("Error: " + e);
