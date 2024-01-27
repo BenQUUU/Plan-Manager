@@ -16,7 +16,7 @@ public class Lesson {
         this.lessonNumber = new SimpleIntegerProperty(lessonNumber);
         this.classroom = new SimpleIntegerProperty(classroom);
         this.subjectName = new SimpleStringProperty(subjectName);
-        this.subjectTeacherInitials = new SimpleStringProperty(teacherName.substring(0, 1) + teacherSurname.charAt(0));
+        this.subjectTeacherInitials = new SimpleStringProperty(teacherName + " " + teacherSurname);
     }
 
     public String getDayName() {
