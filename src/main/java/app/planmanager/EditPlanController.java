@@ -46,6 +46,12 @@ public class EditPlanController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        DBConnector dbConnection = new DBConnector();
+        Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
+        DBFunctions dbFunctions = new DBFunctions();
+
+        listOfSubjects = FXCollections.observableArrayList(dbFunctions.getAllSubjectsFromDB(connection));
+
         lessonNumber.setItems(lessonNumbers);
         subjects.setItems(listOfSubjects);
 
@@ -65,29 +71,29 @@ public class EditPlanController implements Initializable {
     @FXML
     private void editPlan(){
         try{
-
             DBConnector dbConnection = new DBConnector();
             Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
             DBFunctions dbFunctions = new DBFunctions();
 
             int classroomFromUser = Integer.parseInt(classroom.getText());
+            int selectedLessonNumber = lessonNumber.getValue();
+            String selectedDay = dayOfWeek.getValue();
+            String selectedMajor = listOfMajors.getValue();
 
-            EditPlanContainer planContainer = new EditPlanContainer("INF_1", "Monday", 9, "Physics", 101);
+            EditPlanContainer planContainer = new EditPlanContainer(selectedMajor, selectedDay, selectedLessonNumber, "Physics", classroomFromUser);
 
             if (dbFunctions.editPlan(connection, planContainer)) {
-                System.out.println("POPRAWNIE ZEDYTOWAŁO");
+                infoLabel.setTextFill(Color.GREEN);
+                infoLabel.setText("Pomyślnie dodano przedmiot do planu");
             } else {
-                System.out.println("COSIK NIE POSZŁO HEHE");
+                infoLabel.setTextFill(Color.RED);
+                infoLabel.setText("Błąd podczas dodawania do bazy");
             }
 
         }catch(NumberFormatException e){
             infoLabel.setTextFill(Color.RED);
             infoLabel.setText("Niewłaściwy numer klasy");
         }
-
-
-        //infoLabel.setTextFill(Color.GREEN);
-        //infoLabel.setText("Pomyślnie dodano przedmiot do planu");
     }
 }
 

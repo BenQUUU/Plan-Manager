@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static app.planmanager.WindowCreator.createNewWindow;
@@ -98,11 +99,15 @@ public class MainController implements Initializable {
         teacher.setCellValueFactory(new PropertyValueFactory<>("subjectTeacherInitials"));
 
         schedule.getColumns().addAll(numberOfLesson, hour, classroom, subject, teacher);
+        schedule.getSortOrder().add(numberOfLesson);
         schedule.setItems(currentDayLessons);
 
         classes = FXCollections.observableArrayList(dbFunctions.getAllTablesName(connection));
         listOfMajors.setItems(classes);
         listOfMajors.setPromptText("Kierunki");
+        if(!classes.isEmpty()){
+            listOfMajors.setValue(classes.getFirst());
+        }
         // Dodaj listener do ComboBoxa
         listOfMajors.valueProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -124,6 +129,7 @@ public class MainController implements Initializable {
         loginButton.setOnAction(e -> onLoginButtonClick());
         addPlanButton.setOnAction(e -> createNewWindow("addPlanWindow.fxml", "Nowy plan"));
         editPlanButton.setOnAction(e -> openEditWindow());
+        deletePlanButton.setOnAction(e -> onDeleteButtonClick());
 
         addPlanButton.setDisable(true);
         editPlanButton.setDisable(true);
@@ -219,6 +225,29 @@ public class MainController implements Initializable {
         if ("teacher".equals(currentUser.getGroup_())) {
             // Ustaw przycisk deletePlanButton na nieaktywny dla nauczycieli
             deletePlanButton.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void onDeleteButtonClick(){
+        DBConnector dbConnection = new DBConnector();
+        Connection connection = dbConnection.connectToDatabase(System.getenv("DBName"), System.getenv("DBUsername"), System.getenv("DBPassword"));
+        DBFunctions dbFunctions = new DBFunctions();
+
+        String selectedPlan = listOfMajors.getValue();
+
+        if (selectedPlan != null) {
+            if (selectedPlan != null && !selectedPlan.isEmpty()) {
+                Alert potwierdzenie = new Alert(Alert.AlertType.CONFIRMATION);
+                potwierdzenie.setTitle("Potwierdzenie");
+                potwierdzenie.setHeaderText(null);
+                potwierdzenie.setContentText("Czy na pewno chcesz usunąć wybrany plan?");
+                Optional<ButtonType> wynik = potwierdzenie.showAndWait();
+                if (wynik.isPresent() && wynik.get() == ButtonType.OK) {
+                    dbFunctions.deletePlan(connection, selectedPlan);
+                    classes.remove(selectedPlan);
+                }
+            }
         }
     }
 }

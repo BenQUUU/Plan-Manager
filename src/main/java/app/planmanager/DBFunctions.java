@@ -15,9 +15,6 @@ public class DBFunctions {
 
         ArrayList<Lesson> lessonList = new ArrayList<>();
         try {
-            if (major == null) {
-                major = "INF_1";
-            }
             String getPlanInformation = "SELECT * FROM public." + "\"" + major + "\"" + " as i" +
                     " INNER JOIN public.\"Subjects\" as s ON i.\"Subject\" = s.\"SubjectID\"\n" +
                     " INNER JOIN public.\"Users\" as u ON s.\"SubjectTeacher\" = u.\"UserID\" WHERE \"DayName\" = ?;";
