@@ -178,20 +178,6 @@ public class DBFunctions {
                 statement.setInt(4, subjectId);
             }
             System.out.println(editPlanQuery);
-//            editPlanQuery = "DO $$ " +
-//                    "BEGIN " +
-//                    "IF EXISTS (SELECT 1 FROM public." + "\"" + planContainer.planName() + "\" " +
-//                    "WHERE \"LessonNumber\" = ? ) "+
-//                    "THEN " +
-//                    "UPDATE public." + "\"" + planContainer.planName() + "\" " +
-//                    "SET \"DayName\" = ?, \"Classroom\" = ?, \"Subject\" = ? "+
-//                    "WHERE \"LessonNumber\" = ?; "+
-//                    "ELSE "+
-//                    "INSERT INTO public.." + "\"" + planContainer.planName() + "\" " +
-//                    "(\"DayName\", \"LessonNumber\", \"Classroom\", \"Subject\") " +
-//                    "VALUES (?, ?, ? ,?);" +
-//                    "END IF; " +
-//                    "END $$";
 
             statement.executeUpdate();
         }catch (SQLException e){
@@ -214,6 +200,24 @@ public class DBFunctions {
             System.out.println("Error Delete " + e);
             return false;
         }
+    }
+
+    public ArrayList<String> getAllSubjectsFromDB(Connection connection){
+        PreparedStatement statement;
+        ResultSet resultSet;
+        ArrayList<String> subjectArrayList = new ArrayList<>();
+        try{
+            String getAllSubjectsFromDBQuery = "SELECT \"SubjectName\" FROM public.\"Subjects\"";
+            statement = connection.prepareStatement(getAllSubjectsFromDBQuery);
+            resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                subjectArrayList.add(resultSet.getString("SubjectName"));
+            }
+        }catch (SQLException e){
+            System.out.println("Error WITH subjects from DB" + e );
+            return null;
+        }
+        return subjectArrayList;
     }
 
     private boolean doesRowExistsInTable(Connection connection, String planName, int lessonNumber){

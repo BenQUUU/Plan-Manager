@@ -47,7 +47,6 @@ public class LoginController extends MainApp implements Initializable {
 
         DBFunctions dbFunctions = new DBFunctions();
         User user = dbFunctions.checkEmailAndPasswordValidity(connection, email, password);
-
         if (user != null) {
             loginInfo.setText("Logowanie powiodło się");
             // Ustawienie danych użytkownika w MainController po zalogowaniu
