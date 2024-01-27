@@ -103,13 +103,17 @@ public class RegisterController implements Initializable {
                 try {
                     DBFunctions dbFunctions = new DBFunctions();
                     User user = new User(userName, userSurname, userEmail, userPassword, Group.user);
-                    dbFunctions.registerUser(connection, user);
+                    if(!dbFunctions.registerUser(connection, user)){
+                        infoLabel.setTextFill(Color.RED);
+                        infoLabel.setText("Użytkownik już istnieje");
+                    }else{
+                        infoLabel.setTextFill(Color.GREEN);
+                        infoLabel.setText("Pomyślnie stworzono użytkownika");
+                    }
                 } catch (Exception e) {
                     System.out.println("Error: " + e);
                 }
 
-                infoLabel.setTextFill(Color.GREEN);
-                infoLabel.setText("Pomyślnie stworzono użytkownika");
 
                 dbConnector.closeDatabase(connection);
             }

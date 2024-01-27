@@ -75,7 +75,7 @@ public class DBFunctions {
         }
     }
 
-    public void registerUser(Connection connection, User user) {
+    public boolean registerUser(Connection connection, User user) {
         // name, surname, email, group, userID
         PreparedStatement statement;
 
@@ -93,7 +93,9 @@ public class DBFunctions {
             statement.executeUpdate();
         } catch (SQLException | NoSuchAlgorithmException e) {
             System.out.println("Error: " + e);
+            return false;
         }
+        return true;
     }
 
     public boolean addNewPlanToDB(Connection connection, String planName) {
