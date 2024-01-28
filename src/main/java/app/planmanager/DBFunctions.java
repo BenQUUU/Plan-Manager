@@ -139,7 +139,6 @@ public class DBFunctions {
 
         PreparedStatement statement;
 
-
         int subjectId = getSubjectId(connection,planContainer.subject());
         if(subjectId == -1){
             return false;
@@ -178,7 +177,7 @@ public class DBFunctions {
         return true;
     }
 
-    public boolean deletePlan(Connection connection, String planName){
+    public void deletePlan(Connection connection, String planName){
         PreparedStatement statement;
 
         try{
@@ -186,9 +185,7 @@ public class DBFunctions {
             statement = connection.prepareStatement(deletePlanQuery);
 
             statement.executeUpdate();
-            return true;
         }catch(SQLException e ){
-            return false;
         }
     }
 
@@ -226,7 +223,9 @@ public class DBFunctions {
                 }
             }
             return resultArray;
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

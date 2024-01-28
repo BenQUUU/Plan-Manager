@@ -210,13 +210,15 @@ public class MainController implements Initializable {
 
     @FXML
     private void updatePermissions(){
-        addPlanButton.setDisable(false);
-        editPlanButton.setDisable(false);
-        deletePlanButton.setDisable(false);
 
         if ("teacher".equals(currentUser.getGroup_())) {
-            // Ustaw przycisk deletePlanButton na nieaktywny dla nauczycieli
-            deletePlanButton.setDisable(true);
+            addPlanButton.setDisable(false);
+            editPlanButton.setDisable(false);
+        }
+        if("admin".equals(currentUser.getGroup_())){
+            addPlanButton.setDisable(false);
+            editPlanButton.setDisable(false);
+            deletePlanButton.setDisable(false);
         }
     }
 
