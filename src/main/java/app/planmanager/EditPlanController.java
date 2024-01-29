@@ -79,8 +79,9 @@ public class EditPlanController implements Initializable {
             int selectedLessonNumber = lessonNumber.getValue();
             String selectedDay = dayOfWeek.getValue();
             String selectedMajor = listOfMajors.getValue();
+            String selectedSubject = subjects.getValue();
 
-            EditPlanContainer planContainer = new EditPlanContainer(selectedMajor, selectedDay, selectedLessonNumber, "Physics", classroomFromUser);
+            EditPlanContainer planContainer = new EditPlanContainer(selectedMajor, selectedDay, selectedLessonNumber, selectedSubject , classroomFromUser);
 
             if (dbFunctions.editPlan(connection, planContainer)) {
                 infoLabel.setTextFill(Color.GREEN);

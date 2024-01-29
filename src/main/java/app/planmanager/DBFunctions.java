@@ -149,7 +149,7 @@ public class DBFunctions {
             if(doesRowExistsInTable(connection, planContainer.planName(), planContainer.lessonNumber())){
                 editPlanQuery = "UPDATE public." + "\"" + planContainer.planName() + "\" " +
                         "SET \"DayName\" = ?, \"Classroom\" = ?, \"Subject\" = ? " +
-                        "WHERE \"LessonNumber\" = ?;";
+                        "WHERE \"LessonNumber\" = ? AND \"DayName\" = ?;";
 
                 statement = connection.prepareStatement(editPlanQuery);
 
@@ -157,6 +157,7 @@ public class DBFunctions {
                 statement.setInt(2, planContainer.classroom());
                 statement.setInt(3, subjectId);
                 statement.setInt(4, planContainer.lessonNumber());
+                statement.setString(5, planContainer.dayName());
             }else{
                 editPlanQuery = "INSERT INTO public." + "\"" + planContainer.planName() + "\" " +
                         "(\"DayName\", \"LessonNumber\", \"Classroom\", \"Subject\") " +
@@ -169,7 +170,7 @@ public class DBFunctions {
                 statement.setInt(3, planContainer.classroom());
                 statement.setInt(4, subjectId);
             }
-
+            System.out.println(editPlanQuery);
             statement.executeUpdate();
         }catch (SQLException e){
             return false;
