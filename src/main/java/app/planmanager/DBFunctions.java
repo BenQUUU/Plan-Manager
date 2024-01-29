@@ -146,7 +146,7 @@ public class DBFunctions {
 
         String editPlanQuery = "";
         try{
-            if(doesRowExistsInTable(connection, planContainer.planName(), planContainer.lessonNumber())){
+            if(doesRowExistsInTable(connection, planContainer)){
                 editPlanQuery = "UPDATE public." + "\"" + planContainer.planName() + "\" " +
                         "SET \"DayName\" = ?, \"Classroom\" = ?, \"Subject\" = ? " +
                         "WHERE \"LessonNumber\" = ? AND \"DayName\" = ?;";
@@ -170,7 +170,6 @@ public class DBFunctions {
                 statement.setInt(3, planContainer.classroom());
                 statement.setInt(4, subjectId);
             }
-            System.out.println(editPlanQuery);
             statement.executeUpdate();
         }catch (SQLException e){
             return false;
@@ -230,14 +229,16 @@ public class DBFunctions {
         return null;
     }
 
-    private boolean doesRowExistsInTable(Connection connection, String planName, int lessonNumber){
+    private boolean doesRowExistsInTable(Connection connection, EditPlanContainer planContainer){
         PreparedStatement statement;
 
         try{
-            String checkRowExistenceQuery = "SELECT 1 FROM public." + "\"" + planName + "\" " +
-                    "WHERE \"LessonNumber\" = ?";
+            String checkRowExistenceQuery = "SELECT 1 FROM public." + "\"" + planContainer.planName() + "\" " +
+                    "WHERE \"LessonNumber\" = ? " +
+                    "AND \"DayName\" = ?";
             statement = connection.prepareStatement(checkRowExistenceQuery);
-            statement.setInt(1, lessonNumber);
+            statement.setInt(1, planContainer.lessonNumber());
+            statement.setString(2, planContainer.dayName());
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next();
         }catch (SQLException e ){
